@@ -943,3 +943,8 @@ body {
   .dark-mode .tg-dialog .tg-dialog-header .tg-dialog-close-btn {
     filter: invert(1) !important;
   }
+
+  #search-input {
+    font-family: "Carlito", sans-serif;
+    font-size: 14px;
+  }
