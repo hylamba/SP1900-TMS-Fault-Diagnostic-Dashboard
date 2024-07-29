@@ -13,7 +13,7 @@ let currentPage = 1;
 let rowsPerPage = 10;
 let totalPages = 0;
 let hiddenData = [];
-let headers;
+let tableHeaders;
 let selectedFilter = 'All';
 let popupStyle = localStorage.getItem('popupStyle') || 'tree';
 const codeRegex = /([~])?[A-Z]{2}[A-Z0-9]?\s?\d{3}(?= |$|&|,|>=|#| |>|=|<|<=|-|==|)/g;
@@ -28,7 +28,7 @@ function initData() {
     .then(response => response.text())
     .then(csvData => {
       const csvRows = csvData.split('\n');
-      headers = csvRows[0].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(header => header.trim().replace(/^"|"$/g, ''));
+      tableHeaders = csvRows[0].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(header => header.trim().replace(/^"|"$/g, ''));
       let hideRows = false; // Initialize the hide rows flag
       globalData = []; // Reset global data
       hiddenData = [];
@@ -38,7 +38,7 @@ function initData() {
         const rowData = {};
 
         for (let j = 0; j < row.length; j++) {
-          rowData[headers[j]] = row[j].trim().replace(/^"|"$/g, '');
+          rowData[tableHeaders[j]] = row[j].trim().replace(/^"|"$/g, '');
         }
 
         if (row[0].startsWith('-')) {
@@ -55,11 +55,13 @@ function initData() {
       filteredData=globalData; //initialize filteredData with globalData
       createFilter();
       hideSpinner();
-      createTable(headers, globalData);
+      createTable(tableHeaders, globalData);
+
     });
+    // return tableHeaders;
 }
 
-
+// console.log(tableHeaders);
 
 function createFilter() {
   const filterContainer = document.getElementById('filter-container');
@@ -102,7 +104,7 @@ function createFilter() {
         // Call searchTable() to handle search filtering
         searchTable({ target: document.getElementById('search-input') });
 
-        createTable(headers, filteredData);
+        createTable(tableHeaders, filteredData);
         createPagination();
 
         hideSpinner(); // Hide the spinner after the table and pagination have been updated
@@ -125,12 +127,12 @@ function colorSelectedFilter(){
 }
 
 
-function createTable(headers, data) {
+function createTable(tableHeaders, data) {
   const tableHeaderRow = document.createElement('tr');
 
-  for (let i = 0; i < headers.length; i++) {
+  for (let i = 0; i < tableHeaders.length; i++) {
       const tableHeaderCell = document.createElement('th');
-      tableHeaderCell.textContent = headers[i];
+      tableHeaderCell.textContent = tableHeaders[i];
       tableHeaderRow.appendChild(tableHeaderCell);
   }
 
@@ -152,9 +154,9 @@ function createTable(headers, data) {
       }
       const tableRow = document.createElement('tr');
 
-      for (let i = 0; i < headers.length; i++) {
+      for (let i = 0; i < tableHeaders.length; i++) {
           const tableCell = document.createElement('td');
-          tableCell.textContent = row[headers[i]] !== undefined ? row[headers[i]] : '';
+          tableCell.textContent = row[tableHeaders[i]] !== undefined ? row[tableHeaders[i]] : '';
 
           // Add event listener to cells that contain references to other rows
           if (['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'C1'].some((column) => row[column] === tableCell.textContent)) {
@@ -243,7 +245,7 @@ document.querySelectorAll('.switch-container span').forEach((icon, index) => {
       const slider = document.querySelector('.slider');
       slider.style.left = `${index * 33.33}%`;
       // Re-create the table with the new popup style
-      createTable(headers, filteredData);
+      createTable(tableHeaders, filteredData);
   });
 });
 
@@ -294,7 +296,7 @@ function createPagination() {
   
     showSpinner(); // Show the spinner before creating the table
     setTimeout(() => {
-      createTable(headers, filteredData);
+      createTable(tableHeaders, filteredData);
       hideSpinner(); // Hide the spinner after the table has been created
     }, 20); // Adjust the timeout duration as needed
   });
@@ -308,7 +310,7 @@ function createPagination() {
   firstPageButton.addEventListener('click', (e) => {
     e.preventDefault();
     currentPage = 1;
-    createTable(headers, filteredData);
+    createTable(tableHeaders, filteredData);
   });
   paginationContainer.appendChild(firstPageButton);
 
@@ -320,7 +322,7 @@ function createPagination() {
     e.preventDefault();
     if (currentPage > 1) {
       currentPage--;
-      createTable(headers, filteredData);
+      createTable(tableHeaders, filteredData);
     }
   });
   paginationContainer.appendChild(previousPageButton);
@@ -338,7 +340,7 @@ function createPagination() {
       paginationLink.addEventListener('click', (e) => {
         e.preventDefault();
         currentPage = i;
-        createTable(headers, filteredData);
+        createTable(tableHeaders, filteredData);
       });
       paginationContainer.appendChild(paginationLink);
     }
@@ -355,7 +357,7 @@ function createPagination() {
       paginationLink.addEventListener('click', (e) => {
         e.preventDefault();
         currentPage = i;
-        createTable(headers, filteredData);
+        createTable(tableHeaders, filteredData);
       });
       paginationContainer.appendChild(paginationLink);
     }
@@ -376,7 +378,7 @@ function createPagination() {
     lastPageLink.addEventListener('click', (e) => {
       e.preventDefault();
       currentPage = totalPages;
-      createTable(headers, filteredData);
+      createTable(tableHeaders, filteredData);
     });
     paginationContainer.appendChild(lastPageLink);
   } else if (currentPage >= totalPages - 2) {
@@ -387,7 +389,7 @@ function createPagination() {
     firstPageLink.addEventListener('click', (e) => {
       e.preventDefault();
       currentPage = 1;
-      createTable(headers, filteredData);
+      createTable(tableHeaders, filteredData);
     });
     paginationContainer.appendChild(firstPageLink);
 
@@ -412,7 +414,7 @@ function createPagination() {
       paginationLink.addEventListener('click', (e) => {
         e.preventDefault();
         currentPage = i;
-        createTable(headers, filteredData);
+        createTable(tableHeaders, filteredData);
       });
       paginationContainer.appendChild(paginationLink);
     }
@@ -424,7 +426,7 @@ function createPagination() {
     firstPageLink.addEventListener('click', (e) => {
       e.preventDefault();
       currentPage = 1;
-      createTable(headers, filteredData);
+      createTable(tableHeaders, filteredData);
     });
     paginationContainer.appendChild(firstPageLink);
 
@@ -449,7 +451,7 @@ function createPagination() {
       paginationLink.addEventListener('click', (e) => {
         e.preventDefault();
         currentPage = i;
-        createTable(headers, filteredData);
+        createTable(tableHeaders, filteredData);
       });
       paginationContainer.appendChild(paginationLink);
     }
@@ -470,7 +472,7 @@ function createPagination() {
     lastPageLink.addEventListener('click', (e) => {
       e.preventDefault();
       currentPage = totalPages;
-      createTable(headers, filteredData);
+      createTable(tableHeaders, filteredData);
     });
     paginationContainer.appendChild(lastPageLink);
   }
@@ -483,7 +485,7 @@ function createPagination() {
     e.preventDefault();
     if (currentPage < totalPages) {
       currentPage++;
-      createTable(headers, filteredData);
+      createTable(tableHeaders, filteredData);
     }
   });
   paginationContainer.appendChild(nextPageButton);
@@ -495,7 +497,7 @@ function createPagination() {
   lastPageButton.addEventListener('click', (e) => {
     e.preventDefault();
     currentPage = totalPages;
-    createTable(headers, filteredData);
+    createTable(tableHeaders, filteredData);
   });
   paginationContainer.appendChild(lastPageButton);
 
@@ -754,7 +756,7 @@ function searchTable(event) {
     currentPage = 1;
 
     // Create a new table with the search results
-    createTable(headers, filteredData);
+    createTable(tableHeaders, filteredData);
 
     hideSpinner(); // Hide the spinner after the table has been updated
   }, 20); // Adjust the timeout duration as needed
@@ -806,16 +808,6 @@ function showNote() {
         <li><strong>PM</strong>: PM1, PM2 car</li>
         <li><strong>M</strong>: MW1, MW2 car</li>
         <li><strong>T</strong>: TH1, TCH car</li>
-      </ul>
-    ` },
-    { title: 'I/F Types', content: `
-      <ul>
-        <li><strong>DI</strong>: Digital Input</li>
-        <li><strong>DO</strong>: Digital Output</li>
-        <li><strong>AI</strong>: Analog Input</li>
-        <li><strong>SD</strong>: Status Data</li>
-        <li><strong>SDR</strong>: Status Data Request</li>
-        <li><strong>SW</strong>: Internal Software Data</li>
       </ul>
     ` },
     { title: 'Fault Codes', content: `
@@ -1639,8 +1631,8 @@ function tourStart(){
 
 tour.onBeforeExit(()=>{
   clearSearch();
-  tour.finishTour();
-  });
+  tour.finishTour(true).catch(() => {}); // ignore any errors
+});
 
 
 function goToFilter(filterName) {
@@ -1678,7 +1670,7 @@ function setRowsPerPage(value) {
   const totalPagesNew = Math.ceil(filteredDataTemp.length / rowsPerPage);
   currentPage = Math.min(currentPage, totalPagesNew); // Ensure currentPage doesn't exceed totalPagesNew
   setTimeout(() => {
-    createTable(headers, filteredData);
+    createTable(tableHeaders, filteredData);
   }, 20);
 }
 
