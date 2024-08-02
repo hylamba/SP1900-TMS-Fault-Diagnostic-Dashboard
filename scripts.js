@@ -648,7 +648,7 @@ function showPopup(faultNo,tilde,row) {
     circuitDiagramLink.href = `${circuitDiagrams[prefix]}`;
     circuitDiagramLink.target = '_blank';
     circuitDiagramLink.style.fontSize = '14px';
-    circuitDiagramLink.textContent = 'circuit Diagrams';
+    circuitDiagramLink.textContent = 'Circuit Diagrams';
     circuitDiagramLink.classList.add('circuit-diagram-link');
     popup.insertBefore(circuitDiagramLink, popup.firstChild);
   }
@@ -1062,7 +1062,7 @@ function showSitemapPopup(faultNo,tilde,row) {
     circuitDiagramLink.href = `${circuitDiagrams[prefix]}`;
     circuitDiagramLink.target = '_blank';
     circuitDiagramLink.style.fontSize = '14px';
-    circuitDiagramLink.textContent = 'circuit Diagrams';
+    circuitDiagramLink.textContent = 'Circuit Diagrams';
     circuitDiagramLink.classList.add('circuit-diagram-link');
     popupContent.insertBefore(circuitDiagramLink, popupContent.firstChild);
   }
@@ -1308,7 +1308,7 @@ function showTreePopup(faultNo,tilde,row) {
     circuitDiagramLink.href = `${circuitDiagrams[prefix]}`;
     circuitDiagramLink.target = '_blank';
     circuitDiagramLink.style.fontSize = '14px';
-    circuitDiagramLink.textContent = 'circuit Diagrams';
+    circuitDiagramLink.textContent = 'Circuit Diagrams';
     circuitDiagramLink.classList.add('circuit-diagram-link');
     popupContent.insertBefore(circuitDiagramLink, popupContent.firstChild);
   }
