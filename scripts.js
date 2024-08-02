@@ -22,8 +22,8 @@ let darkMode = localStorage.getItem('darkMode') || 'disabled';
 const faultNoPrefixes = {};
 
 let circuitDrawings = {
-  'TMS': 'https://hylamba.github.io/SP1900-TMS-Fault-Diagnostic-Dashboard/TMS%20System%20Configuration.pdf',
-  'CAB': 'https://hylamba.github.io/SP1900-TMS-Fault-Diagnostic-Dashboard/Cab%20Wiring%20Route%20Diagram.pdf',
+  'TMS': 'https://hylamba.github.io/SP1900-TMS-Fault-Diagnostic-Dashboard/circuits/TMS%20System%20Configuration.pdf',
+  'CAB': 'https://hylamba.github.io/SP1900-TMS-Fault-Diagnostic-Dashboard/circuits/Cab%20Wiring%20Route%20Diagram.pdf',
   'VOBC': '',
   'BRAKE': '',
   'CI1': '',
