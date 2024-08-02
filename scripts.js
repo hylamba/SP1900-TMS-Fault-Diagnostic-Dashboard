@@ -735,7 +735,7 @@ function showPopup(faultNo,tilde,row) {
           ) :
           (getReferenceText(referenceRow['Car Type'],row) ?
             `<tr><th>Detect</th><td><b>${getReferenceText(referenceRow['LEVEL'],row)}</b><br>${getReferenceText(referenceRow['Car Type'],row)}</td></tr>` :
-            `<tr><th>Detect</th><td><b>${getDetectLine(referenceRow['LEVEL'],tilde,row)}</b></td></tr>`
+            `<tr><th>Detect</th><td><b>${getReferenceText(referenceRow['LEVEL'],tilde,row)}</b></td></tr>`
           )
         ) :
         ''
