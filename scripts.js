@@ -21,7 +21,7 @@ const codeRegex2 = /([~])?[A-Z]+-[A-Z0-9]?\s?\d{3}(?= |$|&|,|>=|#| |>|=|<|<=|-|=
 let darkMode = localStorage.getItem('darkMode') || 'disabled';
 const faultNoPrefixes = {};
 
-let circuitDrawings = {
+let circuitDiagrams = {
   'TMS': 'https://hylamba.github.io/SP1900-TMS-Fault-Diagnostic-Dashboard/circuits/TMS%20System%20Configuration.pdf',
   'CAB': 'https://hylamba.github.io/SP1900-TMS-Fault-Diagnostic-Dashboard/circuits/Cab%20Wiring%20Route%20Diagram.pdf',
   'VOBC': '',
@@ -643,14 +643,14 @@ function showPopup(faultNo,tilde,row) {
 
   // Add "Circuit Diagram" link at the top left
   const prefix = findMatchedPrefix(row);
-  if (circuitDrawings[prefix]) {
-    const circuitDrawingLink = document.createElement('a');
-    circuitDrawingLink.href = `${circuitDrawings[prefix]}`;
-    circuitDrawingLink.target = '_blank';
-    circuitDrawingLink.style.fontSize = '14px';
-    circuitDrawingLink.textContent = 'Circuit Drawings';
-    circuitDrawingLink.classList.add('circuit-drawing-link');
-    popup.insertBefore(circuitDrawingLink, popup.firstChild);
+  if (circuitDiagrams[prefix]) {
+    const circuitDiagramLink = document.createElement('a');
+    circuitDiagramLink.href = `${circuitDiagrams[prefix]}`;
+    circuitDiagramLink.target = '_blank';
+    circuitDiagramLink.style.fontSize = '14px';
+    circuitDiagramLink.textContent = 'circuit Diagrams';
+    circuitDiagramLink.classList.add('circuit-diagram-link');
+    popup.insertBefore(circuitDiagramLink, popup.firstChild);
   }
 
   popup.style.zIndex = popupCount+1000;
@@ -1057,14 +1057,14 @@ function showSitemapPopup(faultNo,tilde,row) {
 
   // Add "Circuit Diagram" link at the top left
   const prefix = findMatchedPrefix(row);
-  if (circuitDrawings[prefix]) {
-    const circuitDrawingLink = document.createElement('a');
-    circuitDrawingLink.href = `${circuitDrawings[prefix]}`;
-    circuitDrawingLink.target = '_blank';
-    circuitDrawingLink.style.fontSize = '14px';
-    circuitDrawingLink.textContent = 'Circuit Drawings';
-    circuitDrawingLink.classList.add('circuit-drawing-link');
-    popupContent.insertBefore(circuitDrawingLink, popupContent.firstChild);
+  if (circuitDiagrams[prefix]) {
+    const circuitDiagramLink = document.createElement('a');
+    circuitDiagramLink.href = `${circuitDiagrams[prefix]}`;
+    circuitDiagramLink.target = '_blank';
+    circuitDiagramLink.style.fontSize = '14px';
+    circuitDiagramLink.textContent = 'circuit Diagrams';
+    circuitDiagramLink.classList.add('circuit-diagram-link');
+    popupContent.insertBefore(circuitDiagramLink, popupContent.firstChild);
   }
   
   popup.appendChild(popupContent);
@@ -1303,14 +1303,14 @@ function showTreePopup(faultNo,tilde,row) {
 
   // Add "Circuit Diagram" link at the top left
   const prefix = findMatchedPrefix(row);
-  if (circuitDrawings[prefix]) {
-    const circuitDrawingLink = document.createElement('a');
-    circuitDrawingLink.href = `${circuitDrawings[prefix]}`;
-    circuitDrawingLink.target = '_blank';
-    circuitDrawingLink.style.fontSize = '14px';
-    circuitDrawingLink.textContent = 'Circuit Drawings';
-    circuitDrawingLink.classList.add('circuit-drawing-link');
-    popupContent.insertBefore(circuitDrawingLink, popupContent.firstChild);
+  if (circuitDiagrams[prefix]) {
+    const circuitDiagramLink = document.createElement('a');
+    circuitDiagramLink.href = `${circuitDiagrams[prefix]}`;
+    circuitDiagramLink.target = '_blank';
+    circuitDiagramLink.style.fontSize = '14px';
+    circuitDiagramLink.textContent = 'circuit Diagrams';
+    circuitDiagramLink.classList.add('circuit-diagram-link');
+    popupContent.insertBefore(circuitDiagramLink, popupContent.firstChild);
   }
   popup.appendChild(popupContent);
 

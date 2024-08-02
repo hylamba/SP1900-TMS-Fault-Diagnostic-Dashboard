@@ -496,7 +496,7 @@ body {
     overflow-wrap: break-word;
   }
 
-  .Sitemap-popup-content > .circuit-drawing-link {
+  .Sitemap-popup-content > .circuit-diagram-link {
     display: inline-block;
     margin-bottom: 15px;
   }
@@ -1014,18 +1014,18 @@ body {
   color: #fff;
 }
 
-.circuit-drawing-link {
+.circuit-diagram-link {
   color: #000000;
 }
 
-.circuit-drawing-link:hover {
+.circuit-diagram-link:hover {
   color: #555;
 }
 
-.dark-mode .circuit-drawing-link {
+.dark-mode .circuit-diagram-link {
   color: #fff;
 }
 
-.dark-mode .circuit-drawing-link:hover {
+.dark-mode .circuit-diagram-link:hover {
   color: #ccc;
 }
