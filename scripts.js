@@ -19,6 +19,31 @@ let popupStyle = localStorage.getItem('popupStyle') || 'tree';
 const codeRegex = /([~])?[A-Z]{2}[A-Z0-9]?\s?\d{3}(?= |$|&|,|>=|#| |>|=|<|<=|-|==|)/g;
 const codeRegex2 = /([~])?[A-Z]+-[A-Z0-9]?\s?\d{3}(?= |$|&|,|>=|#| |>|=|<|<=|-|==|)/g;
 let darkMode = localStorage.getItem('darkMode') || 'disabled';
+const faultNoPrefixes = {};
+
+let circuitDrawings = {
+  'TMS': 'https://hylamba.github.io/SP1900-TMS-Fault-Diagnostic-Dashboard/TMS%20System%20Configuration.pdf',
+  'CAB': 'https://hylamba.github.io/SP1900-TMS-Fault-Diagnostic-Dashboard/Cab%20Wiring%20Route%20Diagram.pdf',
+  'VOBC': '',
+  'BRAKE': '',
+  'CI1': '',
+  'CI2': '',
+  'SIV1': '',
+  'SIV2': '',
+  'DCU U': '',
+  'DCU D': '',
+  'A/C1': '',
+  'A/C2': '',
+  'COM': '',
+  'MC': '',
+  'PID': '',
+  'TNI': '',
+  'DI': '',
+  'ETC': '',
+  'DRM': '',
+  'DPID': '',
+  'DCCTV': '',
+};
 
 initData();
 
@@ -70,7 +95,7 @@ function createFilter() {
   const visibleRows = globalData.filter(row => !row['hidden']);
   const faultNos = visibleRows.map(row => row['Fault No.']);
 
-  const faultNoPrefixes = {};
+  
   faultNos.forEach((faultNo) => {
     const prefix = faultNo.split('-')[0];
     if (!faultNoPrefixes[prefix]) {
@@ -171,11 +196,11 @@ function createTable(tableHeaders, data) {
                       const refFaultName = refRow ? refRow['Fault Name'] : ''; // Get the fault name of the reference
                       if (faultNos.includes(ref)) {
                           if (popupStyle === 'tree') {
-                              refHtml = `<span class="tooltip-wrapper"><u onclick="showTreePopup('${ref}', ${hasTilde})">${hasTilde? `~${ref}` : ref}</u><span class="tooltip"><span class="tooltiptext">${hasTilde? `~${refFaultName}` : refFaultName}</span></span></span>`;
+                              refHtml = `<span class="tooltip-wrapper"><u onclick="showTreePopup('${ref}', ${hasTilde}, '${row['Fault No.']}')">${hasTilde? `~${ref}` : ref}</u><span class="tooltip"><span class="tooltiptext">${hasTilde? `~${refFaultName}` : refFaultName}</span></span></span>`;
                           } else if (popupStyle === 'sitemap'){
-                              refHtml = `<span class="tooltip-wrapper"><u onclick="showSitemapPopup('${ref}', ${hasTilde})">${hasTilde? `~${ref}` : ref}</u><span class="tooltip"><span class="tooltiptext">${hasTilde? `~${refFaultName}` : refFaultName}</span></span></span>`;
+                              refHtml = `<span class="tooltip-wrapper"><u onclick="showSitemapPopup('${ref}', ${hasTilde}, '${row['Fault No.']}')">${hasTilde? `~${ref}` : ref}</u><span class="tooltip"><span class="tooltiptext">${hasTilde? `~${refFaultName}` : refFaultName}</span></span></span>`;
                           } else {
-                              refHtml = `<span class="tooltip-wrapper"><u onclick="showPopup('${ref}', ${hasTilde})">${hasTilde? `~${ref}` : ref}</u><span class="tooltip"><span class="tooltiptext">${hasTilde? `~${refFaultName}` : refFaultName}</span></span></span>`;
+                              refHtml = `<span class="tooltip-wrapper"><u onclick="showPopup('${ref}', ${hasTilde}, '${row['Fault No.']}')">${hasTilde? `~${ref}` : ref}</u><span class="tooltip"><span class="tooltiptext">${hasTilde? `~${refFaultName}` : refFaultName}</span></span></span>`;
                           }
                       } else {
                           refHtml = `<span>${ref}</span>`;
@@ -534,7 +559,7 @@ function createPagination() {
 
 }
 
-function getDetectLine(level, tildePresent) {
+function getDetectLine(level, tildePresent,row) {
   let matches = level.match(codeRegex);
   if (!matches) {
     matches = level.match(codeRegex2);
@@ -557,8 +582,8 @@ function getDetectLine(level, tildePresent) {
       if (hiddenData.find(row => row['Fault No.'] === faultNo)) {
         const textDecoration = 'underline';
         const linkText = (tildePresent && !replaced) ? '~' + faultNo : faultNo;
-        // console.log(faultNo);
-        result += `<a style="text-decoration: ${textDecoration}; cursor: pointer;" onclick="showPopup('${faultNo}', ${tildePresent})">${linkText}</a>`;
+
+        result += `<a style="text-decoration: ${textDecoration}; cursor: pointer;" onclick="showPopup('${faultNo}', ${tildePresent},'${row}')">${linkText}</a>`;
       } else {
         result += (tildePresent && !replaced) ? '~' + match : match;
       }
@@ -572,12 +597,14 @@ function getDetectLine(level, tildePresent) {
   }
 }
 
-function getReferenceText(text) {
+function getReferenceText(text,row) {
   function replaceMatch(match, tilde) {
     const faultNo = match.replace(/^~/, ''); // Remove the tilde from the faultNo if it exists
     if (hiddenData.find(row => row['Fault No.'] === faultNo)) {
       const textDecoration = 'underline';
-      return `<a style="text-decoration: ${textDecoration}; cursor: pointer;" onclick="${`showPopup('${faultNo}', ${tilde ? true : false})`}"">${tilde ? '~' + faultNo : faultNo}</a>`;
+
+      return `<a style="text-decoration: ${textDecoration}; cursor: pointer;" onclick="${`showPopup('${faultNo}', ${tilde ? true : false},'${row}')`}"">${tilde ? '~' + faultNo : faultNo}</a>`;
+         
     } else {
       return match;
     }
@@ -586,7 +613,14 @@ function getReferenceText(text) {
   return text.replace(codeRegex, replaceMatch).replace(codeRegex2, replaceMatch);
 }
 
-function showPopup(faultNo,tilde) {
+
+function findMatchedPrefix(faultNo) {
+  const prefix = Object.keys(faultNoPrefixes).find((prefix) => faultNo.startsWith(prefix));
+  return prefix;
+}
+
+
+function showPopup(faultNo,tilde,row) {
   const referenceRow = hiddenData.find((row) => row['Fault No.'] === faultNo);
   if (!referenceRow) {
     console.error(`No row found with Fault No. ${faultNo}`);
@@ -606,6 +640,19 @@ function showPopup(faultNo,tilde) {
     popup.style.top = `${window.scrollY + popupCount * 20}px`;
     popup.style.left = `0px`;
   }
+
+  // Add "Circuit Diagram" link at the top left
+  const prefix = findMatchedPrefix(row);
+  if (circuitDrawings[prefix]) {
+    const circuitDrawingLink = document.createElement('a');
+    circuitDrawingLink.href = `${circuitDrawings[prefix]}`;
+    circuitDrawingLink.target = '_blank';
+    circuitDrawingLink.style.fontSize = '14px';
+    circuitDrawingLink.textContent = 'Circuit Drawings';
+    circuitDrawingLink.classList.add('circuit-drawing-link');
+    popup.insertBefore(circuitDrawingLink, popup.firstChild);
+  }
+
   popup.style.zIndex = popupCount+1000;
 
   popup.style.cursor = 'move'; // Add a move cursor to indicate draggability
@@ -672,6 +719,7 @@ function showPopup(faultNo,tilde) {
   popupCount++;
 
   const popupContent = document.createElement('div');
+  popupContent.className = 'original-popup-content';
   popupContent.innerHTML = `
   <div>
     <h2>${tilde ? '~' + faultNo : faultNo}</h2>
@@ -679,15 +727,15 @@ function showPopup(faultNo,tilde) {
       <tr><th>No.</th><td>${tilde ? '~' + referenceRow['Fault No.'] : referenceRow['Fault No.']}</td></tr>
       <tr><th>Monitoring</th><td>${tilde ? '~' + referenceRow['Fault Name'] : referenceRow['Fault Name']}</td></tr>
       ${referenceRow['D1'] ? `<tr><th>I/F Type</th><td>${referenceRow['D1']}</td></tr>` : ''}
-      ${getReferenceText(referenceRow['Car Type']) || getReferenceText(referenceRow['LEVEL']) ?
+      ${getReferenceText(referenceRow['Car Type'],row) || getReferenceText(referenceRow['LEVEL'],row) ?
         (tilde ?
-          (getReferenceText(referenceRow['Car Type']) ?
-            `<tr><th>Detect</th><td><b>${getReferenceText(referenceRow['Car Type'])}</b><br>${getReferenceText(referenceRow['LEVEL'])}</td></tr>` :
-            `<tr><th>Detect</th><td><b>${getDetectLine(referenceRow['LEVEL'],tilde)}</b></td></tr>`
+          (getReferenceText(referenceRow['Car Type'],row) ?
+            `<tr><th>Detect</th><td><b>${getReferenceText(referenceRow['Car Type'],row)}</b><br>${getReferenceText(referenceRow['LEVEL'],row)}</td></tr>` :
+            `<tr><th>Detect</th><td><b>${getDetectLine(referenceRow['LEVEL'],tilde,row)}</b></td></tr>`
           ) :
-          (getReferenceText(referenceRow['Car Type']) ?
-            `<tr><th>Detect</th><td><b>${getReferenceText(referenceRow['LEVEL'])}</b><br>${getReferenceText(referenceRow['Car Type'])}</td></tr>` :
-            `<tr><th>Detect</th><td><b>${getReferenceText(referenceRow['LEVEL'],tilde)}</b></td></tr>`
+          (getReferenceText(referenceRow['Car Type'],row) ?
+            `<tr><th>Detect</th><td><b>${getReferenceText(referenceRow['LEVEL'],row)}</b><br>${getReferenceText(referenceRow['Car Type'],row)}</td></tr>` :
+            `<tr><th>Detect</th><td><b>${getDetectLine(referenceRow['LEVEL'],tilde,row)}</b></td></tr>`
           )
         ) :
         ''
@@ -974,7 +1022,7 @@ function getLevelHtml(level, tilde) {
   }
 }
 
-function showSitemapPopup(faultNo,tilde) {
+function showSitemapPopup(faultNo,tilde,row) {
   const popupContent = document.createElement('div');
   popupContent.className = 'Sitemap-popup-content';
 
@@ -1005,6 +1053,20 @@ function showSitemapPopup(faultNo,tilde) {
     popup.style.left = `0px`;
   }
   popup.style.zIndex = popupCount+1000;
+
+
+  // Add "Circuit Diagram" link at the top left
+  const prefix = findMatchedPrefix(row);
+  if (circuitDrawings[prefix]) {
+    const circuitDrawingLink = document.createElement('a');
+    circuitDrawingLink.href = `${circuitDrawings[prefix]}`;
+    circuitDrawingLink.target = '_blank';
+    circuitDrawingLink.style.fontSize = '14px';
+    circuitDrawingLink.textContent = 'Circuit Drawings';
+    circuitDrawingLink.classList.add('circuit-drawing-link');
+    popupContent.insertBefore(circuitDrawingLink, popupContent.firstChild);
+  }
+  
   popup.appendChild(popupContent);
 
   // Make the popup draggable
@@ -1202,7 +1264,8 @@ function createSitemapNode(faultNo, tilde) {
 }
 
 
-function showTreePopup(faultNo,tilde) {
+function showTreePopup(faultNo,tilde,row) {
+  // console.log(row);
   const popupContent = document.createElement('div');
   popupContent.className = 'popup-content';
 
@@ -1235,6 +1298,20 @@ function showTreePopup(faultNo,tilde) {
     popup.style.left = `0px`;
   }
   popup.style.zIndex = popupCount+1000;
+
+
+
+  // Add "Circuit Diagram" link at the top left
+  const prefix = findMatchedPrefix(row);
+  if (circuitDrawings[prefix]) {
+    const circuitDrawingLink = document.createElement('a');
+    circuitDrawingLink.href = `${circuitDrawings[prefix]}`;
+    circuitDrawingLink.target = '_blank';
+    circuitDrawingLink.style.fontSize = '14px';
+    circuitDrawingLink.textContent = 'Circuit Drawings';
+    circuitDrawingLink.classList.add('circuit-drawing-link');
+    popupContent.insertBefore(circuitDrawingLink, popupContent.firstChild);
+  }
   popup.appendChild(popupContent);
 
   // Make the popup draggable
