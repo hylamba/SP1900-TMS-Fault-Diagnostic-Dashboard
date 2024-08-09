@@ -686,35 +686,6 @@ function showPopup(faultNo,tilde,row) {
     isDragging = false;
   });
 
-  // Add event listeners for dragging (touch events)
-  popup.addEventListener('touchstart', (e) => {
-    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-      e.preventDefault();
-    }
-    isDragging = true;
-    offsetX = e.touches[0].clientX - popup.offsetLeft;
-    offsetY = e.touches[0].clientY - popup.offsetTop;
-    // Bring the popup to the front when dragging starts
-    popupArray.forEach((p) => {
-      p.style.zIndex = popupCount;
-    });
-    popup.style.zIndex = popupCount + 1000;
-  });
-
-  document.addEventListener('touchmove', (e) => {
-    if (isDragging && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-      e.preventDefault();
-    }
-    if (isDragging) {
-      popup.style.top = `${e.touches[0].clientY - offsetY}px`;
-      popup.style.left = `${e.touches[0].clientX - offsetX}px`;
-    }
-  }, { passive: false});
-
-  document.addEventListener('touchend', () => {
-    isDragging = false;
-  });
-
   // Increment the popup count
   popupCount++;
 
@@ -945,30 +916,6 @@ function showNote() {
   document.addEventListener('mouseup', () => {
     isDragging = false;
   });
-  notePopup.addEventListener('touchstart', (e) => {
-    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-      e.preventDefault();
-    }
-    isDragging = true;
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    initialX = notePopup.offsetLeft;
-    initialY = notePopup.offsetTop;
-  });
-  
-  document.addEventListener('touchmove', (e) => {
-    if (isDragging && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-      e.preventDefault();
-    }
-    if (isDragging) {
-      notePopup.style.top = `${initialY + e.touches[0].clientY - startY}px`;
-      notePopup.style.left = `${initialX + e.touches[0].clientX - startX}px`;
-    }
-  }, { passive: false});
-  
-  document.addEventListener('touchend', () => {
-    isDragging = false;
-  });
 }
 
 const noteLink = document.getElementById('note-link');
@@ -1099,34 +1046,6 @@ function showSitemapPopup(faultNo,tilde,row) {
   });
 
 
-  popup.addEventListener('touchstart', (e) => {
-    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-      e.preventDefault();
-    }
-    isDragging = true;
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    initialX = popup.offsetLeft;
-    initialY = popup.offsetTop;
-    popupArray.forEach((p) => {
-      p.style.zIndex = popupCount;
-    });
-    popup.style.zIndex = popupCount + 1000;
-  });
-  
-  document.addEventListener('touchmove', (e) => {
-    if (isDragging && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-      e.preventDefault();
-    }
-    if (isDragging) {
-      popup.style.top = `${initialY + e.touches[0].clientY - startY}px`;
-      popup.style.left = `${initialX + e.touches[0].clientX - startX}px`;
-    }
-  }, { passive: false});
-  
-  document.addEventListener('touchend', () => {
-    isDragging = false;
-  });
   popupCount++;
 
   document.body.appendChild(popup);
@@ -1227,15 +1146,6 @@ function createSitemapNode(faultNo, tilde) {
       nodeContent.classList.toggle('collapsed');
     });
   
-    nodeContent.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      childNodes.classList.toggle('hidden');
-      nodeContent.classList.toggle('collapsed');
-    });
-  
-    nodeContent.addEventListener('touchend', (e) => {
-      e.preventDefault();
-    });
   } else {
     nodeContent.addEventListener('click', () => {
       // You can add any action you want when a node without children is clicked
@@ -1251,14 +1161,7 @@ function createSitemapNode(faultNo, tilde) {
       SitemapNode.classList.remove('hover');
     });
 
-    // Add hover effect for touch devices
-    nodeContent.addEventListener('touchstart', () => {
-      SitemapNode.classList.add('hover');
-    });
 
-    nodeContent.addEventListener('touchend', () => {
-      SitemapNode.classList.remove('hover');
-    });
   
   return SitemapNode;
 }
@@ -1344,34 +1247,6 @@ function showTreePopup(faultNo,tilde,row) {
   });
 
 
-  popup.addEventListener('touchstart', (e) => {
-    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-      e.preventDefault();
-    }
-    isDragging = true;
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    initialX = popup.offsetLeft;
-    initialY = popup.offsetTop;
-    popupArray.forEach((p) => {
-      p.style.zIndex = popupCount;
-    });
-    popup.style.zIndex = popupCount + 1000;
-  });
-  
-  document.addEventListener('touchmove', (e) => {
-    if (isDragging && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-      e.preventDefault();
-    }
-    if (isDragging) {
-      popup.style.top = `${initialY + e.touches[0].clientY - startY}px`;
-      popup.style.left = `${initialX + e.touches[0].clientX - startX}px`;
-    }
-  }, { passive: false});
-  
-  document.addEventListener('touchend', () => {
-    isDragging = false;
-  });
   popupCount++;
 
   document.body.appendChild(popup);
@@ -1498,15 +1373,6 @@ function createTreeNode(faultNo, tilde) {
       nodeContent.classList.toggle('collapsed');
     });
   
-    nodeContent.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      childNodes.classList.toggle('hidden');
-      nodeContent.classList.toggle('collapsed');
-    });
-  
-    nodeContent.addEventListener('touchend', (e) => {
-      e.preventDefault();
-    });
   } else {
     nodeContent.addEventListener('click', () => {
       // You can add any action you want when a node without children is clicked
@@ -1522,14 +1388,7 @@ function createTreeNode(faultNo, tilde) {
       treeNode.classList.remove('hover');
     });
 
-    // Add hover effect for touch devices
-    nodeContent.addEventListener('touchstart', () => {
-      treeNode.classList.add('hover');
-    });
 
-    nodeContent.addEventListener('touchend', () => {
-      treeNode.classList.remove('hover');
-    });
   
   return treeNode;
 }

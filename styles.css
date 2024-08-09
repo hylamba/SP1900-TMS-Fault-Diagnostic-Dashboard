@@ -3,6 +3,7 @@ body {
     font-family: "Carlito", sans-serif;
     background-color: #f2f2f2;
     transition: background-color 0.5s ease; /* add a smooth transition effect */
+  
   }
   
   .container {
@@ -22,6 +23,8 @@ body {
     height: auto;
     max-height: 650px; /* Set a reasonable height for scrolling */
     border-radius: 5px;
+    overscroll-behavior: none;
+    
 }
   
   table {
